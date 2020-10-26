@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<synthetic xsi:schemaLocation="http://www.xebialabs.com/deployit/synthetic synthetic.xsd" xmlns="http://www.xebialabs.com/deployit/synthetic" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <type type="salt.Server" extends="xlrelease.Configuration">
+    <property name="base_url" category="input" label="Salt SSE URL" required="true"/>
+    <property name="auth_user" category="input" label="Salt SSE User" required="true"/>
+    <property name="auth_pass" category="input" password="true" label="Salt SSE Password" required="true"/>
+  </type>
+  <type type="salt.GetVersions" extends="xlrelease.PythonScript" label="Get versions">
+    <property name="saltVar"  category="input" label="Salt Variable" kind="string"/>
+    <property name="iconLocation" required="false" hidden="true" default="salt/salt_icon.png"/>
+    <property name="sseUrl" category="input" label="SSE Url" referenced-type="salt.Server"/>
+  </type>
+  <type type="salt.Rest" extends="xlrelease.PythonScript" label="Run Salt Job">
+  <!---
+    <property name="targets"  category="input" label="Salt Targets" kind="string"/>
+    <property name="module_function"  category="input" label="Salt Function" kind="string"/>
+    <property name="iconLocation" required="false" hidden="true" default="salt/salt_icon.png"/>
+    <property name="sseUrl" category="input" label="SSE Url" referenced-type="salt.Server" kind="ci"/>
+  -->
+    <property name="job_uuid"  category="input" label="Salt Job" description="The UUID of an existing job to publish." kind="string" required="true"/>
+    <property name="tgt_uuid"  category="input" label="Salt Targets" description="The UUID of an existing target group that should receive this command." kind="string" required="false"/>
+    <property name="iconLocation" required="false" hidden="true" default="salt/salt_icon.png"/>
+    <property name="sseUrl" category="input" label="SSE Url" referenced-type="salt.Server" kind="ci"/>
+  </type>
+  <type type="snyk.Server" extends="xlrelease.Configuration">
+    <property name="url" category="input" label="Snyk Base URL" required="true"/>
+    <property name="token" category="input" label="Snyk Auth TOKEN" required="true"/>
+    <property name="scriptLocation" hidden="true" default="snyk/CheckConnection.py"/>
+  </type>
+  <type type="snyk.Task" extends="xlrelease.PythonScript" virtual="true">
+    <property name="server" category="input" label="Snyk Server" referenced-type="snyk.Server" kind="ci" required="true" description="Snyk Server Configuration"/>
+    <property name="groupId" category="input" label="Group ID" description="The ID of the Snyk Group that the test was carried out for" kind="string" required="true"/>
+    <property name="classReload" category="input" default="true" hidden="true" kind="boolean"/>
+    <property name="scriptLocation" default="snyk/SnykTask.py" hidden="true"/>
+    <property name="iconLocation" default="snyk_icon.png" hidden="true"/>
+    <property name="taskColor" hidden="true" default="#4b45a9"/>
+  </type>
+  <type type="snyk.ProjectCheck" extends="snyk.Task">
+    <property name="title" description="Snyk Project Issues" default="Check Issues"/>
+    <property name="projId" category="input" label="Project ID" description="The ID of an existing project to check." kind="string" required="true"/>
+    <property name="severity" category="input" label="Severity Level" description="The severity level for minimal viability." kind="string" default="low" required="true"/>
+    <property name="fail_on_severity" category="input" label="Halt on Issues" description="Fail if an issue is found" kind="boolean" default="false" required="false"/>
+    <property name="low" category="output" kind="integer"/>
+    <property name="medium" category="output" kind="integer"/>
+    <property name="high" category="output" kind="integer"/>
+  </type>
+  <type type="snyk.GetProjects" label="Snyk Projects Tile" extends="xlrelease.Tile" description="Display all defined projects with issue severity">
+    <property name="title" description="Title title." default="Snyk Issues Summary"/>
+    <property name="server" category="input" label="Snyk Server" referenced-type="snyk.Server" kind="ci"/>
+  </type>
+</synthetic>
