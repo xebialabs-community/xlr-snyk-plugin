@@ -37,4 +37,3 @@ resp = call(locals())
 
 for key, val in resp.items():
     locals()[key] = val
-    #print("key:{}, value:{}".format(key, val))

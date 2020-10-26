@@ -9,6 +9,7 @@
 #
 
 import json
+import sets
 from xlrelease.HttpRequest import HttpRequest
 import org.slf4j.Logger as Logger
 import org.slf4j.LoggerFactory as LoggerFactory
@@ -18,6 +19,9 @@ from java.lang import String
 '''
 Calls Snyk API to execute/query against the Snyk defined project using TOKEN based access as defined by Snyk
 '''
+
+HTTP_SUCCESS = sets.Set([200, 201, 202, 203, 204, 205, 206, 207, 208])
+HTTP_ERROR = sets.Set([400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410,412, 413, 414, 415])
 
 class SnykClient(object):
     def __init__(self, server):
@@ -58,15 +62,44 @@ class SnykClient(object):
 
     def snyk_projectcheck(self, variables):
         endpoint = '/org/{}/project/{}'.format(variables['groupId'], variables['projId'])
-
+        severity_levels = {'low': 1, 'medium': 2, 'high': 3}
+        issues = False
         self.logger.info("Getting scan results using groupId:{} and projectId:{}".format(variables['groupId'], variables['projId']))
         
         resp = self.api_call("GET", endpoint, headers=variables['headers'])
         data = json.loads(resp.getResponse())
-        self.logger.warn("Results: {}".format(data))
+        if resp.getStatus() in HTTP_SUCCESS:
+            self.logger.warn("Results: {}".format(data))
+            # Check if we have fail_on_severity checked and then see if we have issues
+            if variables['fail_on_severity']:
+                # severity is set in the Task definition
+                if variables['severity'] in data['issueCountsBySeverity'].keys():
+                    fail_level = severity_levels[variables['severity']]
+                    for key, val in data['issueCountsBySeverity'].items():
+                        if val > 0 and fail_level <= severity_levels[key]:
+                            err_msg = "Project:{} has issues causing release failure- {}:{}".format(variables['projId'], key, val)
+                            self.logger.error(err_msg)
+                            self.setLastError(err_msg)
+                            raise Exception(err_msg)
+                        if val > 0:
+                            issues = True
+                else:
+                    err_msg = "{} not a valid severity level".format(variables['severity'])
+                    self.setLastError(err_msg)
+                    self.logger.error(err_msg)
+                    raise Exception(err_msg)
+            else:
+                # Let the release continue even if there are issues
+                self.logger.info("Skipping severity check")
+            if issues:
+                self.logger.info("Project has issues, but does not exceed severity threshold: {}".format(variables['severity']))
+            
+            return data['issueCountsBySeverity']
+        else:
+            self.logBadReturnCodes(data)
 
-        return data['issueCountsBySeverity']
-        
+        self.throw_error(resp)
+
 
     def snyk_getprojects(self, variables):
         endpoint = '/org/{}/projects'
@@ -75,10 +108,41 @@ class SnykClient(object):
 
         resp = self.api_call("GET", endpoint, headers=variables['headers'])
         data = json.loads(resp.getResponse())
-        self.logger.warn("Results: {}".format(data))
+        if resp.getStatus() in HTTP_SUCCESS:
+            self.logger.warn("Results: {}".format(data))
 
-        projects_data = {}
-        for project in data['org']['projects']:
-            projects_data[project['id']] = {'name': project['name'], 'issueCountsBySeverity': project['issueCountsBySeverity']}
-            
-        return projects_data
+            projects_data = {}
+            for project in data['org']['projects']:
+                projects_data[project['id']] = {'name': project['name'], 'issueCountsBySeverity': project['issueCountsBySeverity']}
+                
+            return projects_data
+        else:
+            self.logBadReturnCodes(data)
+
+        self.throw_error(resp)
+
+
+    def logBadReturnCodes(self, data):
+        if ('returnCode' in data) & ('reasonCode' in data) & ('messages' in data):
+            self.logger.error("Return Code = {}".format(data['returnCode']))
+            self.logger.error("Reason Code = {}".format(data['reasonCode']))
+            self.logger.error("Message     = {}".format(data['messages']))
+        else:
+            tb = self.getLastError()
+            self.logger.error("Return Codes EXCEPTION \n================\n%s\n=================".format(tb))
+            self.logger.error("REAL BAD RETURN OBJECT!!!!")
+            self.setLastError("{}\nREAL BAD RETURN OBJECT!!!!".format(tb))
+            raise Exception(500)
+
+
+    def setLastError(self, error):
+        self.error = error
+
+
+    def getLastError(self):
+        return self.error
+
+
+    def throw_error(self, resp):
+        self.logger.error("Error from Snyk, HTTP Return: {}\n".format(resp.getStatus()))
+        raise Exception(resp.getStatus())

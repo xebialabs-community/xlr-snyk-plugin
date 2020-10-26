@@ -46,6 +46,8 @@
   </type>
   <type type="snyk.GetProjects" label="Snyk Projects Tile" extends="xlrelease.Tile" description="Display all defined projects with issue severity">
     <property name="title" description="Title title." default="Snyk Issues Summary"/>
+    <property name="uri" hidden="true" default="snyk/get-projects-tile-summary-view.html"/>
     <property name="server" category="input" label="Snyk Server" referenced-type="snyk.Server" kind="ci"/>
+    <property name="classReload" category="input" default="true" hidden="true" kind="boolean"/>
   </type>
 </synthetic>
