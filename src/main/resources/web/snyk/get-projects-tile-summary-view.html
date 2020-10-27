@@ -11,7 +11,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 <head>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
     integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link rel="stylesheet" href="snyk-projects-tile.css" type="text/css">
+    <link rel="stylesheet" href="snyk-projects-tiles.css" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
     <script
             src="https://code.jquery.com/jquery-3.2.1.min.js"
@@ -22,9 +22,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 <script>
     window.addEventListener("xlrelease.load", function () {
         window.xlrelease.queryTileData(function (response) {
-            var projects = response.data.data.issues.parents;
-            issues.forEach(function (project) {
-              $("#issues").append(
+            // DEBUG - see what data the backend is sending us
+            // console.log(response.data.data)
+            var projects = response.data.data
+            projects.forEach(function(project) {
+                    $("#projects").append(
                     '<tr>' +
                     '<td>' + project.name + '</td>' +
                     '<td>' + project.high + '</td>' +
@@ -32,22 +34,22 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                     '<td>' + project.low + '</td>' +
                     '</tr>'
                 );
-            })
+            });
         });
     });
 </script>
 <body>
-<div class="issues-tile-summary">
+<div class="projects-tile-summary">
 <table class="table table-rounded table-striped">
     <thead>
     <tr>
-        <th style="width:15.71%;">Project Name</th>
+        <th style="width:35%;">Project Name</th>
         <th>High Severity</th>
         <th>Medium Severity</th>
         <th>Low Severity</th>
     </tr>
     </thead>
-    <tbody id="issues">
+    <tbody id="projects">
     </tbody>
 </table>
 </div>

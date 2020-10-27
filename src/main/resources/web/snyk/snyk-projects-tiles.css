@@ -8,22 +8,18 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-.issues-tile-summary {
+.projects-tile-summary {
     font-size: 12px;
     font-family: "OpenSans", "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: #333333;
 }
 
-.issues-tile-summary table {
+.projects-tile-summary table {
     table-layout: fixed;
 }
 
-.issues-tile-summary td {
+.projects-tile-summary td {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
-}
-
-.issues-datetime {
-    white-space: nowrap;
 }

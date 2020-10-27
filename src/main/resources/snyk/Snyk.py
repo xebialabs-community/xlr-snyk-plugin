@@ -61,10 +61,10 @@ class SnykClient(object):
 
 
     def snyk_projectcheck(self, variables):
-        endpoint = '/org/{}/project/{}'.format(variables['groupId'], variables['projId'])
+        endpoint = '/org/{}/project/{}'.format(variables['orgId'], variables['projId'])
         severity_levels = {'low': 1, 'medium': 2, 'high': 3}
         issues = False
-        self.logger.info("Getting scan results using groupId:{} and projectId:{}".format(variables['groupId'], variables['projId']))
+        self.logger.info("Getting scan results using orgId:{} and projectId:{}".format(variables['orgId'], variables['projId']))
         
         resp = self.api_call("GET", endpoint, headers=variables['headers'])
         data = json.loads(resp.getResponse())
@@ -102,19 +102,26 @@ class SnykClient(object):
 
 
     def snyk_getprojects(self, variables):
-        endpoint = '/org/{}/projects'
+        endpoint = '/org/{}/projects'.format(variables['orgId'])
 
-        self.logger.info("Getting scan results for all projects using groupId:{}".format(variables['groupId']))
+        self.logger.info("Getting scan results for all projects using orgId:{}".format(variables['orgId']))
 
         resp = self.api_call("GET", endpoint, headers=variables['headers'])
         data = json.loads(resp.getResponse())
         if resp.getStatus() in HTTP_SUCCESS:
-            self.logger.warn("Results: {}".format(data))
+            self.logger.debug("Results: {}".format(data))
 
-            projects_data = {}
-            for project in data['org']['projects']:
-                projects_data[project['id']] = {'name': project['name'], 'issueCountsBySeverity': project['issueCountsBySeverity']}
+            projects_data = []
+            for project in data['projects']:
+                projects_data.append({
+                    'id': project['id'],
+                    'name': project['name'],
+                    'high': project['issueCountsBySeverity']['high'],
+                    'medium': project['issueCountsBySeverity']['medium'],
+                    'low': project['issueCountsBySeverity']['low']
+                })
                 
+            self.logger.debug("Projects Data:{}".format(projects_data))
             return projects_data
         else:
             self.logBadReturnCodes(data)
