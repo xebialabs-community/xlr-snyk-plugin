@@ -12,7 +12,7 @@
     <property name="taskColor" hidden="true" default="#4b45a9"/>
     <property name="classReload" category="input" default="true" hidden="true" kind="boolean"/>
   </type>
-  <type type="snyk.ProjectCheck" extends="snyk.Task">
+  <type type="snyk.ProjectCompliance" extends="snyk.Task">
     <property name="title" description="Snyk Project Compliance" default="Check Compliance"/>
     <property name="projId" category="input" label="Project ID" description="The ID of an existing project to check." kind="string" required="true"/>
     <property name="severity" category="input" label="Severity Level" description="The severity level for minimal viability." kind="string" default="low" required="true"/>
