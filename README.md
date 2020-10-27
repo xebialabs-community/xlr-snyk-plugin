@@ -37,7 +37,7 @@ Note:  XLR version should not be lower than lowest supported version.  See <http
 * Copy the latest JAR file from the [releases page](https://github.com/xebialabs-community/xlr-snyk-plugin/releases) into the `RELEASE_SERVER/plugins` directory.
 * Restart the XL Release server.
 
-## Features/Usage/Types/Tasks
+## Usage/Tasks
 
 Once the Snyk plugin is installed, a Snyk Server Configuration can be created to define:
 * The API Base URL: https://snyk.io/api/v1
