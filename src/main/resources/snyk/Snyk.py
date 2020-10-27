@@ -79,16 +79,18 @@ class SnykClient(object):
                         err_msg = "Project:{} has issues causing release failure- {}:{}".format(variables['projId'], key, val)
                         self.logger.error(err_msg)
                         self.setLastError(err_msg)
-                        raise Exception(err_msg)
+                        print(err_msg)
+                        #raise Exception(err_msg)
                     if val > 0:
                         issues = True
             else:
-                err_msg = "{} not a valid severity level".format(variables['severity'])
+                err_msg = "{} is not a valid severity level".format(variables['severity'])
                 self.setLastError(err_msg)
                 self.logger.error(err_msg)
                 raise Exception(err_msg)
 
             if issues:
+                print("Project has issues, but does not exceed severity threshold: {}".format(variables['severity']))
                 self.logger.info("Project has issues, but does not exceed severity threshold: {}".format(variables['severity']))
             
             return data['issueCountsBySeverity']
