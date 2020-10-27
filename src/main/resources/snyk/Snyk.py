@@ -70,27 +70,24 @@ class SnykClient(object):
         data = json.loads(resp.getResponse())
         if resp.getStatus() in HTTP_SUCCESS:
             self.logger.warn("Results: {}".format(data))
-            # Check if we have fail_on_severity checked and then see if we have issues
-            if variables['fail_on_severity']:
-                # severity is set in the Task definition
-                if variables['severity'] in data['issueCountsBySeverity'].keys():
-                    fail_level = severity_levels[variables['severity']]
-                    for key, val in data['issueCountsBySeverity'].items():
-                        if val > 0 and fail_level <= severity_levels[key]:
-                            err_msg = "Project:{} has issues causing release failure- {}:{}".format(variables['projId'], key, val)
-                            self.logger.error(err_msg)
-                            self.setLastError(err_msg)
-                            raise Exception(err_msg)
-                        if val > 0:
-                            issues = True
-                else:
-                    err_msg = "{} not a valid severity level".format(variables['severity'])
-                    self.setLastError(err_msg)
-                    self.logger.error(err_msg)
-                    raise Exception(err_msg)
+
+            # severity is set in the Task definition
+            if variables['severity'] in data['issueCountsBySeverity'].keys():
+                fail_level = severity_levels[variables['severity']]
+                for key, val in data['issueCountsBySeverity'].items():
+                    if val > 0 and fail_level <= severity_levels[key]:
+                        err_msg = "Project:{} has issues causing release failure- {}:{}".format(variables['projId'], key, val)
+                        self.logger.error(err_msg)
+                        self.setLastError(err_msg)
+                        raise Exception(err_msg)
+                    if val > 0:
+                        issues = True
             else:
-                # Let the release continue even if there are issues
-                self.logger.info("Skipping severity check")
+                err_msg = "{} not a valid severity level".format(variables['severity'])
+                self.setLastError(err_msg)
+                self.logger.error(err_msg)
+                raise Exception(err_msg)
+
             if issues:
                 self.logger.info("Project has issues, but does not exceed severity threshold: {}".format(variables['severity']))
             
