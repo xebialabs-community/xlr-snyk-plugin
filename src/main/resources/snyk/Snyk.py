@@ -60,7 +60,7 @@ class SnykClient(object):
         return response
 
 
-    def snyk_projectcheck(self, variables):
+    def snyk_projectcomplianceself, variables):
         endpoint = '/org/{}/project/{}'.format(variables['orgId'], variables['projId'])
         severity_levels = {'low': 1, 'medium': 2, 'high': 3}
         issues = False
