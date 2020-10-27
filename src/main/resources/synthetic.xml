@@ -15,7 +15,14 @@
   <type type="snyk.ProjectCompliance" extends="snyk.Task">
     <property name="title" description="Snyk Project Compliance" default="Check Compliance"/>
     <property name="projId" category="input" label="Project ID" description="The ID of an existing project to check." kind="string" required="true"/>
-    <property name="severity" category="input" label="Severity Level" description="The severity level for minimal viability." kind="string" default="low" required="true"/>
+    <property name="severity" label="Halt Severity Level" description="The severity level for minimal viability (ignore will not Halt)." kind="enum" default="low" required="true">
+      <enum-values>
+        <value>low</value>
+        <value>medium</value>
+        <value>high</value>
+        <value>ignore</value>
+      </enum-values>
+    </property>
     <property name="low" category="output" kind="integer"/>
     <property name="medium" category="output" kind="integer"/>
     <property name="high" category="output" kind="integer"/>
