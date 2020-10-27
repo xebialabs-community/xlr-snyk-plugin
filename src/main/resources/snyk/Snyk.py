@@ -75,18 +75,18 @@ class SnykClient(object):
             fail_level = severity_levels[variables['severity']]
             for key, val in data['issueCountsBySeverity'].items():
                 if val > 0 and fail_level <= severity_levels[key]:
-                    err_msg = "Project:{} has compliance issues - {}:{}".format(variables['projId'], key, val)
+                    err_msg = "Project: {} has compliance issues - {}".format(variables['projId'], json.dumps(data['issueCountsBySeverity']))
                     self.logger.error(err_msg)
                     self.setLastError(err_msg)
                     print(err_msg)
-                    raise Exception(err_msg)
+                    raise Exception("Exiting due to compliance issues")
                 if val > 0:
                     issues = True
 
             if issues and variables['severity'] == 'ignore':
                 err_msg = "Project has issues that match or exceed severity level: {}".format(variables['severity'])
                 print(err_msg)
-                self.logger.error(err_msg)
+                self.logger.warn(err_msg)
             
             return data['issueCountsBySeverity']
         else:
