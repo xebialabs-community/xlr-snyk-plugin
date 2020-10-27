@@ -7,10 +7,10 @@
   <type type="snyk.Task" extends="xlrelease.PythonScript" virtual="true">
     <property name="server" category="input" label="Snyk Server" referenced-type="snyk.Server" kind="ci" required="true" description="Snyk Server Configuration"/>
     <property name="orgId" category="input" label="Organization ID" description="The ID of the Snyk Organization that the test was carried out for" kind="string" required="true"/>
-    <property name="classReload" category="input" default="false" hidden="true" kind="boolean"/>
     <property name="scriptLocation" default="snyk/SnykTask.py" hidden="true"/>
     <property name="iconLocation" default="snyk_icon.png" hidden="true"/>
     <property name="taskColor" hidden="true" default="#4b45a9"/>
+    <property name="classReload" category="input" default="true" hidden="true" kind="boolean"/>
   </type>
   <type type="snyk.ProjectCheck" extends="snyk.Task">
     <property name="title" description="Snyk Project Compliance" default="Check Compliance"/>
@@ -26,6 +26,6 @@
     <property name="title" description="Display name of the tile." default="Snyk Issues Summary"/>
     <property name="server" category="input" label="Snyk Server" referenced-type="snyk.Server" kind="ci"/>
     <property name="orgId" category="input" label="Organization ID" description="The ID of the Snyk Organization that owns the projects" kind="string" required="true"/>
-    <property name="classReload" category="input" default="false" hidden="true" kind="boolean"/>
+    <property name="classReload" category="input" default="true" hidden="true" kind="boolean"/>
   </type>
 </synthetic>
