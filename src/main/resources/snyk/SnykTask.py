@@ -30,7 +30,7 @@ headers = {
             "Authorization": "token {}".format(server['token'])
 
         }
-logger.error("Call Snyk Method {}".format(method))
+logger.info("Call Snyk Method {}".format(method))
 
 call = getattr(snyk, method)
 resp = call(locals())
