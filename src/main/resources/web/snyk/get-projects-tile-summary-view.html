@@ -22,15 +22,14 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 <script>
     window.addEventListener("xlrelease.load", function () {
         window.xlrelease.queryTileData(function (response) {
-            var issues = response.data.data.issues.parents;
-            issues.forEach(function (commit) {
-              $("#comissuesmits").append(
+            var projects = response.data.data.issues.parents;
+            issues.forEach(function (project) {
+              $("#issues").append(
                     '<tr>' +
-                    '<td>' + commit.hash + '</td>' +
-                    '<td>' + commit.date + '</td>' +
-                    '<td>' + commit.author.user.display_name +
-                    ' (<a href="mailto:' + commit.author.raw + '">' + commit.author.raw + '</a>)</td>' +
-                    '<td>' + commit.message + '</td>' +
+                    '<td>' + project.name + '</td>' +
+                    '<td>' + project.high + '</td>' +
+                    '<td>' + project.medium + '</td>' +
+                    '<td>' + project.low + '</td>' +
                     '</tr>'
                 );
             })
@@ -42,10 +41,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 <table class="table table-rounded table-striped">
     <thead>
     <tr>
-        <th style="width:15.71%;">Commit ID</th>
-        <th>Date</th>
-        <th>Committer</th>
-        <th style="width:31.42%;">Message</th>
+        <th style="width:15.71%;">Project Name</th>
+        <th>High Severity</th>
+        <th>Medium Severity</th>
+        <th>Low Severity</th>
     </tr>
     </thead>
     <tbody id="issues">

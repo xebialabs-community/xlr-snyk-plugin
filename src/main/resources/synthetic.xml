@@ -22,10 +22,9 @@
     <property name="iconLocation" required="false" hidden="true" default="salt/salt_icon.png"/>
     <property name="sseUrl" category="input" label="SSE Url" referenced-type="salt.Server" kind="ci"/>
   </type>
-  <type type="snyk.Server" extends="xlrelease.Configuration">
+  <type type="snyk.Server" extends="configuration.HttpConnection">
     <property name="url" category="input" label="Snyk Base URL" required="true"/>
     <property name="token" category="input" label="Snyk Auth TOKEN" required="true"/>
-    <property name="scriptLocation" hidden="true" default="snyk/CheckConnection.py"/>
   </type>
   <type type="snyk.Task" extends="xlrelease.PythonScript" virtual="true">
     <property name="server" category="input" label="Snyk Server" referenced-type="snyk.Server" kind="ci" required="true" description="Snyk Server Configuration"/>
@@ -44,10 +43,9 @@
     <property name="medium" category="output" kind="integer"/>
     <property name="high" category="output" kind="integer"/>
   </type>
-  <type type="snyk.GetProjects" label="Snyk Projects Tile" extends="xlrelease.Tile" description="Display all defined projects with issue severity">
-    <property name="title" description="Title title." default="Snyk Issues Summary"/>
+  <type type="snyk.ProjectsTile" label="Snyk Projects Tile" extends="xlrelease.Tile" description="Display all defined projects with issue severity">
     <property name="uri" hidden="true" default="snyk/get-projects-tile-summary-view.html"/>
+    <property name="title" description="Display name of the tile." default="Snyk Issues Summary"/>
     <property name="server" category="input" label="Snyk Server" referenced-type="snyk.Server" kind="ci"/>
-    <property name="classReload" category="input" default="true" hidden="true" kind="boolean"/>
   </type>
 </synthetic>
