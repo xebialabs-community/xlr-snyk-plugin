@@ -16,7 +16,7 @@
     <property name="title" description="Snyk Project Issues" default="Check Issues"/>
     <property name="projId" category="input" label="Project ID" description="The ID of an existing project to check." kind="string" required="true"/>
     <property name="severity" category="input" label="Severity Level" description="The severity level for minimal viability." kind="string" default="low" required="true"/>
-    <property name="fail_on_severity" category="input" label="Halt on Issues" description="Fail if an issue is found" kind="boolean" default="false" required="false"/>
+    <property name="fail_on_severity" category="input" label="Halt on Issues" description="Fail if an issue is found" kind="boolean" default="true" required="false"/>
     <property name="low" category="output" kind="integer"/>
     <property name="medium" category="output" kind="integer"/>
     <property name="high" category="output" kind="integer"/>
