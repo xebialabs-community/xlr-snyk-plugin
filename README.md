@@ -55,5 +55,9 @@ XLR Variables can be defined in XLR to allow passing project issue data along to
 * Medium (as defined by Snyk Scan)
 * Low (as defined by Snyk Scan)
 
+## Usage/Tiles
+
+Once the Snyk Server Configuration is created, a Tile can be added to show all projects/issues assigned to an Organization ID
+
 ## References
 
