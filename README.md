@@ -60,4 +60,5 @@ XLR Variables can be defined in XLR to allow passing project issue data along to
 Once the Snyk Server Configuration is created, a Tile can be added to show all projects/issues assigned to an Organization ID
 
 ## References
-
+XLR Documentation for plugin development: <https://docs.xebialabs.com/v.9.6/release/how-to/extend-official-xlr-xld-plugin-using-python-sdk/#configuration-type-definition>
+Snyk API Documentation: <https://snyk.docs.apiary.io/>
