@@ -60,9 +60,9 @@ class SnykClient(object):
         return response
 
 
-    def snyk_projectcomplianceself, variables):
+    def snyk_projectcompliance(self, variables):
         endpoint = '/org/{}/project/{}'.format(variables['orgId'], variables['projId'])
-        severity_levels = {'low': 1, 'medium': 2, 'high': 3}
+        severity_levels = {'low': 1, 'medium': 2, 'high': 3, 'ignore': 0}
         issues = False
         self.logger.info("Getting scan results using orgId:{} and projectId:{}".format(variables['orgId'], variables['projId']))
         
@@ -72,26 +72,21 @@ class SnykClient(object):
             self.logger.warn("Results: {}".format(data))
 
             # severity is set in the Task definition
-            if variables['severity'] in data['issueCountsBySeverity'].keys():
-                fail_level = severity_levels[variables['severity']]
-                for key, val in data['issueCountsBySeverity'].items():
-                    if val > 0 and fail_level <= severity_levels[key]:
-                        err_msg = "Project:{} has issues causing release failure- {}:{}".format(variables['projId'], key, val)
-                        self.logger.error(err_msg)
-                        self.setLastError(err_msg)
-                        print(err_msg)
-                        #raise Exception(err_msg)
-                    if val > 0:
-                        issues = True
-            else:
-                err_msg = "{} is not a valid severity level".format(variables['severity'])
-                self.setLastError(err_msg)
-                self.logger.error(err_msg)
-                raise Exception(err_msg)
+            fail_level = severity_levels[variables['severity']]
+            for key, val in data['issueCountsBySeverity'].items():
+                if val > 0 and fail_level <= severity_levels[key]:
+                    err_msg = "Project:{} has compliance issues - {}:{}".format(variables['projId'], key, val)
+                    self.logger.error(err_msg)
+                    self.setLastError(err_msg)
+                    print(err_msg)
+                    raise Exception(err_msg)
+                if val > 0:
+                    issues = True
 
-            if issues:
-                print("Project has issues, but does not exceed severity threshold: {}".format(variables['severity']))
-                self.logger.info("Project has issues, but does not exceed severity threshold: {}".format(variables['severity']))
+            if issues and variables['severity'] == 'ignore':
+                err_msg = "Project has issues that match or exceed severity level: {}".format(variables['severity'])
+                print(err_msg)
+                self.logger.error(err_msg)
             
             return data['issueCountsBySeverity']
         else:
