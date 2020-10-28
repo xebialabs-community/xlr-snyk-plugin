@@ -15,7 +15,9 @@
   <type type="snyk.ProjectCompliance" extends="snyk.Task">
     <property name="title" description="Snyk Project Compliance" default="Check Compliance"/>
     <property name="projId" category="input" label="Project ID" description="The ID of an existing project to check." kind="string" required="true"/>
-    <property name="severity" label="Halt Severity Level" description="The severity level for minimal viability (ignore will not Halt)." kind="enum" default="low" required="true">
+    <property name="issues" category="output" kind="map_string_string"/>
+    <!-- <property name="severity" label="Halt Severity Level" description="The severity level for minimal viability (ignore will not Halt)." kind="enum" required="true"> -->
+    <property name="severity" category="input" label="Severity" kind="enum" default="low">
       <enum-values>
         <value>low</value>
         <value>medium</value>
@@ -23,9 +25,6 @@
         <value>ignore</value>
       </enum-values>
     </property>
-    <property name="low" category="output" kind="integer"/>
-    <property name="medium" category="output" kind="integer"/>
-    <property name="high" category="output" kind="integer"/>
   </type>
   <type type="snyk.ProjectsTile" label="Snyk Projects Tile" extends="xlrelease.Tile" description="Display all defined projects with issue severity">
     <property default="release,folder,global" hidden="true" name="supportedScopes" kind="list_of_string"/>
