@@ -65,30 +65,27 @@ class SnykClient(object):
         severity_levels = {'low': 1, 'medium': 2, 'high': 3, 'ignore': 0}
         issues = False
         self.logger.info("Getting scan results using orgId:{} and projectId:{}".format(variables['orgId'], variables['projId']))
-        
+        self.logger.debug("Getting scan results from endpoint:{}".format(endpoint))
+
         resp = self.api_call("GET", endpoint, headers=variables['headers'])
         data = json.loads(resp.getResponse())
         if resp.getStatus() in HTTP_SUCCESS:
-            self.logger.warn("Results: {}".format(data))
+            self.logger.debug("Results: {}".format(data))
 
             # severity is set in the Task definition
             fail_level = severity_levels[variables['severity']]
             for key, val in data['issueCountsBySeverity'].items():
+                self.logger.warn("key:{} - val:{}".format(key, val))
                 if val > 0 and fail_level <= severity_levels[key]:
                     err_msg = "Project: {} has compliance issues - {}".format(variables['projId'], json.dumps(data['issueCountsBySeverity']))
                     self.logger.error(err_msg)
                     self.setLastError(err_msg)
                     print(err_msg)
-                    raise Exception("Exiting due to compliance issues")
-                if val > 0:
-                    issues = True
-
-            if issues and variables['severity'] == 'ignore':
-                err_msg = "Project has issues that match or exceed severity level: {}".format(variables['severity'])
-                print(err_msg)
-                self.logger.warn(err_msg)
+                    if variables['severity'] != 'ignore':
+                        raise Exception("Exiting due to compliance issues")
+                    break
             
-            return data['issueCountsBySeverity']
+            return {"issues": data['issueCountsBySeverity']}
         else:
             self.logBadReturnCodes(data)
 
