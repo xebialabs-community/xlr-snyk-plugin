@@ -13,7 +13,6 @@
 
 * A Snyk Organization with API access will need to be setup with Snyk.io <https://snyk.io/>
 
-
 ## Preface
 
 This document describes the functionality provided by the XL Release (XLR) Snyk plugin.
@@ -21,6 +20,7 @@ This document describes the functionality provided by the XL Release (XLR) Snyk 
 See the [XL Release reference manual](https://docs.xebialabs.com/xl-release) for background information on XL Release and release automation concepts.  
 
 ## Overview
+
 The Snyk plugin for XLR will interact with Snyk's API to determine the status of a project based on Snyk scans.  Issue severities can be used to determine the project's viability to be included in the release.  The XLR Task has the ability to react to the three Snyk severity levels (High, Medium, Low)
 
 ## Requirements
