@@ -10,7 +10,7 @@
 #
 
 '''
-Calls Snyk API to execute/query against the Snyk defined project using TOKEN based access as defined by Snyk
+Calls Snyk API to execute/query to retrieve all project data using TOKEN based access as defined by Snyk
 '''
 
 import snyk.Snyk
@@ -24,25 +24,21 @@ import org.slf4j.Logger as Logger
 
 logger = LoggerFactory.getLogger("Snyk")
 
+if server is None:
+    raise Exception("Missing server configuration item!")
+
 headers = {
             "Content-Type": "application/json",
             "Authorization": "token {}".format(server['token'])
 
         }
 
-logger.info("Get Snyk Client - pass server")
+title = "Snyk '{}' Issues Summary".format(issueType)
+logger.debug("Get Snyk Client - pass server")
 snyk = SnykClient.get_client(server)
 
-logger.info("Setup projects data")
+logger.debug("Setup projects data")
 snyk.set_projects(headers)
 
-logger.info("Get project data for project: {}".format(projectName))
-issue_data = snyk.get_project(headers, projectName)
-logger.debug("Return 'resp' data (should be a list of projects with issues): {}".format(issue_data))
-
-for key, val in issue_data.items():
-    locals()[key] = val
-
-if severity != 'ignore':
-    if issue_data['issues']['vuln'][severity] > 0 or issue_data['license']['vuln'][severity] > 0:
-        raise Exception("Exiting - Issues with project:'{}' meeting severity level:'{}' Issues:{}".format(projectName, severity, issue_data['issues']))
+logger.debug("Call Snyk Method: get_issues")
+data = snyk.get_issues(locals())

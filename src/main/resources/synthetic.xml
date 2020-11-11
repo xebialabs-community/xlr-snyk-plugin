@@ -1,29 +1,33 @@
 <!--
-    Copyright 2020 XEBIALABS
+    Copyright <YEAR> <COPYRIGHT HOLDER>
     Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
     The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -->
-<?xml version='1.0' encoding='UTF-8'?>
 <synthetic xsi:schemaLocation="http://www.xebialabs.com/deployit/synthetic synthetic.xsd" xmlns="http://www.xebialabs.com/deployit/synthetic" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <type type="snyk.Server" extends="xlrelease.Configuration">
     <property name="url" category="input" label="Snyk Base URL" required="true"/>
     <property name="token" category="input" label="Snyk Auth TOKEN" required="true"/>
+    <property name="orgId" category="input" label="Snyk Organization ID" required="true"/>
   </type>
   <type type="snyk.Task" extends="xlrelease.PythonScript" virtual="true">
     <property name="server" category="input" label="Snyk Server" referenced-type="snyk.Server" kind="ci" required="true" description="Snyk Server Configuration"/>
-    <property name="orgId" category="input" label="Organization ID" description="The ID of the Snyk Organization that the test was carried out for" kind="string" required="true"/>
     <property name="scriptLocation" default="snyk/SnykTask.py" hidden="true"/>
     <property name="iconLocation" default="snyk_icon.png" hidden="true"/>
     <property name="taskColor" hidden="true" default="#4b45a9"/>
     <property name="classReload" category="input" default="true" hidden="true" kind="boolean"/>
   </type>
+  <type type="snyk.GetOrganizations" extends="xlrelease.JythonProvider" label="Snyk Orginanization Provider" description="This value provider has zero parameters">
+    <property name="server" label="Snyk Server" referenced-type="snyk.Server" kind="ci" description="Snyk Server Configuration"/>
+  </type>
+  <type type="snyk.GetProjects" extends="xlrelease.JythonProvider" label="Snyk Orginanization Projects" description="This value provider has zero parameters">
+    <property name="server" label="Snyk Server" referenced-type="snyk.Server" kind="ci" description="Snyk Server Configuration"/>
+  </type>
   <type type="snyk.ProjectCompliance" extends="snyk.Task">
     <property name="title" description="Snyk Project Compliance" default="Check Compliance"/>
-    <property name="projId" category="input" label="Project ID" description="The ID of an existing project to check." kind="string" required="true"/>
+    <property name="projectName" category="input" label="Project Name" description="Project name used to get scan results - defined at execution" required="true"/>
     <property name="issues" category="output" kind="map_string_string"/>
-    <!-- <property name="severity" label="Halt Severity Level" description="The severity level for minimal viability (ignore will not Halt)." kind="enum" required="true"> -->
-    <property name="severity" category="input" label="Severity" description="The severity level for minimal viability (ignore will not Halt)." kind="enum" default="low">
+    <property name="severity" category="input" label="Severity" description="The severity level for minimal viability of the project (ignore will not Halt)." kind="enum" default="low">
       <enum-values>
         <value>low</value>
         <value>medium</value>
@@ -32,12 +36,19 @@
       </enum-values>
     </property>
   </type>
-  <type type="snyk.ProjectsTile" label="Snyk Projects Tile" extends="xlrelease.Tile" description="Display all defined projects with issue severity">
-    <property default="release,folder,global" hidden="true" name="supportedScopes" kind="list_of_string"/>
+  <type type="snyk.Tile" extends="xlrelease.Tile" virtual="true">
+  <property default="release,folder,global" hidden="true" name="supportedScopes" kind="list_of_string"/>
+    <property name="scriptLocation" default="snyk/IssuesTile.py" hidden="true"/>
     <property name="uri" hidden="true" default="snyk/get-projects-tile-summary-view.html"/>
-    <property name="title" description="Display name of the tile." default="Snyk Issues Summary"/>
-    <property name="server" category="input" label="Snyk Server" referenced-type="snyk.Server" kind="ci"/>
-    <property name="orgId" category="input" label="Organization ID" description="The ID of the Snyk Organization that owns the projects" kind="string" required="true"/>
+    <property name="server" category="input" label="Snyk Server" referenced-type="snyk.Server" kind="ci" required="true" description="Snyk Server Configuration"/>
     <property name="classReload" category="input" default="true" hidden="true" kind="boolean"/>
+  </type>
+  <type type="snyk.SecurityIssuesTile" label="Snyk Projects Security Issues Tile" extends="snyk.Tile" description="Display all defined projects with security issues by severity">
+    <property name="title" description="Title of the tile" default="Snyk Security Issues Summary"/>
+    <property name="issueType" category="input" default="vuln" hidden="true"/>
+  </type>
+  <type type="snyk.LicenseIssuesTile" label="Snyk Projects License Issues Tile" extends="snyk.Tile" description="Display all defined projects with license issues by severity">
+    <property name="title" description="Title of the tile" default="Snyk License Issues Summary"/>
+    <property name="issueType" category="input" default="license" hidden="true"/>
   </type>
 </synthetic>

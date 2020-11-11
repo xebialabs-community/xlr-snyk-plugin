@@ -10,10 +10,10 @@
 #
 
 '''
-Calls Snyk API to execute/query to retrieve all project data using TOKEN based access as defined by Snyk
+Calls Snyk API to query for organizations accessible by TOKEN
 '''
 
-import snyk.Snyk
+""" import snyk.Snyk
 
 if classReload:
     reload(snyk.Snyk)
@@ -33,8 +33,43 @@ headers = {
             "Authorization": "token {}".format(server['token'])
 
         }
-        
-logger.info("Call Snyk Method: snyk_getprojects")
 
-call = getattr(snyk, 'snyk_getprojects')
-data = call(locals())
+logger.debug("Call Snyk Method: snyk_getorganizations")
+
+call = getattr(snyk, 'snyk_getorganizations')
+result = call(locals()) """
+
+
+""" import requests
+
+def get_orgs(server, token):
+    '''
+    Retrive project info using "id" or "name" attribute
+    '''
+
+    print("Getting organizations from Snyk API")
+
+    url = 'https://snyk.io/api/v1/ogs'
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": "token {}".format(token)
+        }
+
+    
+
+    try:
+        resp = requests.get(url, headers=headers)
+        return resp
+    except ClientProtocolException:
+            raise Exception("URL is not valid")
+    if not resp.isSuccessful():
+        raise Exception(
+            "HTTP response code %s (%s)"
+            % (resp.getStatus(), resp.errorDump())
+        )
+
+
+result = get_orgs(server, token) """
+
+print("Starting GetOrganizations")
+
