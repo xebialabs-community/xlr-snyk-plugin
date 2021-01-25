@@ -62,3 +62,7 @@ Once the Snyk Server Configuration is created, a Tile can be added to show all p
 ## References
 XLR Documentation for plugin development: <https://docs.xebialabs.com/v.9.6/release/how-to/extend-official-xlr-xld-plugin-using-python-sdk/#configuration-type-definition>
 Snyk API Documentation: <https://snyk.docs.apiary.io/>
+
+## Build Locally
+
+./gradlew clean build -P pluginVersion=test --info --stacktrace
